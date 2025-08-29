@@ -1,0 +1,30 @@
+// This block tells Prisma to generate the TypeScript client
+generator client {
+  provider = "prisma-client-js"
+}
+
+// This block defines our database connection
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Blueprint for the Users table
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  parties   Party[]  @relation("HostedParties")
+}
+
+// Blueprint for the Parties table
+model Party {
+  id          String    @id @default(cuid())
+  title       String
+  description String
+  partyDate   DateTime
+  location    String
+  host        User      @relation("HostedParties", fields: [hostId], references: [id])
+  hostId      String
+}
